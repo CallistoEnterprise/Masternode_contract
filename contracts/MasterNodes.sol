@@ -126,6 +126,7 @@ contract MasterNodes is Ownable {
         // All Callisto Enterprise nodes belong to contract owner
         if (owner() != msg.sender) { // user node
             require(authorityByOwner[msg.sender] == address(0), "User already has node");
+            require(_nodes[authority].owner == address(0), "authority already added");
             isUser = 1;
             authorityByOwner[msg.sender] = authority;
         }
