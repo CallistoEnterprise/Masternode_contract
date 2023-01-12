@@ -200,6 +200,8 @@ contract MasterNodes is Ownable {
         require(n.owner != address(0) && n.isActive, "wrong authority");
         require(n.owner == msg.sender || owner() == msg.sender, "Only node or contract owner");
         uint256 isUser = uint256(n.isUser);
+        if (isUser == 1) _payRewards(n.owner);
+        else _payRewards(owner());
         require(_details[isUser].nodes.remove(authority), "Authority not exist");
         _details[isUser].inactiveNodes++;
         // update total deposits
@@ -208,8 +210,6 @@ contract MasterNodes is Ownable {
         _details[isUser].totalDeposits[2] -= n.balances[2];
         n.isActive = false;
         n.unlockTime = block.timestamp + inactiveUnlockTime;
-        if (isUser == 1) _payRewards(n.owner);
-        else _payRewards(owner());
         emit NodeDeactivated(authority);
     }
 
@@ -357,6 +357,17 @@ contract MasterNodes is Ownable {
             // contract owner receive reward from all nodes belong to Callisto Enterprise
             reward = pendingCallistoReward + (_reward * (100 - usersNodesRewardRatio) / 100);
         }
+    }
+
+    // increase users rewards pool
+    function addRewardToUsersPool(uint256 amountSOY) external onlyOwner {
+        SOY_TOKEN.safeTransferFrom(msg.sender, address(this), amountSOY);
+        for (uint256 i = 0; i < 3; i++) {
+            uint256 r = amountSOY * ratio[i] / 100; // part of reward per token type
+            uint256 deposit = _details[1].totalDeposits[i];
+            if (deposit != 0)
+                accumulatedRewardPerShare[i] = accumulatedRewardPerShare[i] + (r * 1e18 / deposit);
+        }        
     }
 
     // Update reward variables of this Local Farm to be up-to-date.
