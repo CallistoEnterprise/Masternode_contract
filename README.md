@@ -23,7 +23,7 @@
 # Callisto Enterprise nodes
 
 | # | Authority | Node URL |
-|---|---------------|-----------|----------|
+|---|-----------|----------|
 | 1 | 0x0aC2EEf8Be963B3546Bf9684dc849554d57bA2a9 | https://ip-159-225.cust.aspone.cz/ |
 | 2 | 0x0299c19b81886AFb840Ae9e8268C9eFA5A1a847C | https://nrc6gwlqvajn4umvmcqurtni240usuqm.lambda-url.us-east-2.on.aws/ |
 | 3 | 0x7dCA2354D3ab60EceaBAF4be2b2664c1B22B973c | https://srs27mbzuopehskfhvkdrdjwqi0qpjxk.lambda-url.us-west-2.on.aws/ |
