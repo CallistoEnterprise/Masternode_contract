@@ -198,8 +198,9 @@ contract MasterNodes is Ownable {
         update();
         Node storage n = _nodes[authority];
         require(n.owner != address(0) && n.isActive, "wrong authority");
-        require(n.owner == msg.sender || owner() == msg.sender, "Only node or contract owner");
         uint256 isUser = uint256(n.isUser);
+        if (isUser == 0) n.owner = owner(); // node owner of CLOE nodes is always current contract owner.
+        require(n.owner == msg.sender || owner() == msg.sender, "Only node or contract owner");
         if (isUser == 1) _payRewards(n.owner);
         else _payRewards(owner());
         require(_details[isUser].nodes.remove(authority), "Authority not exist");
@@ -219,6 +220,8 @@ contract MasterNodes is Ownable {
         Node storage n = _nodes[authority];
         address nodeOwner = n.owner;
         require(nodeOwner != address(0) && !n.isActive, "wrong authority");
+        uint256 isUser = uint256(n.isUser);
+        if (isUser == 0) nodeOwner = owner(); // node owner of CLOE nodes is always current contract owner.
         require(nodeOwner == msg.sender || owner() == msg.sender, "Only node or contract owner");
         require(n.unlockTime <= block.timestamp, "Node is locked");
         _details[uint(n.isUser)].inactiveNodes--; // remove node from inactive counter
